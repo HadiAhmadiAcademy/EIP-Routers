@@ -6,7 +6,9 @@ public static class ChoiceParser
     {
         if (string.IsNullOrEmpty(input)) return Choices.Unknown;
 
-        var firstCharacter = input[0];
-        return long.TryParse(input, out var index) ? index : Choices.Unknown;
+        var index = input.IndexOf('.');
+        input = input.Substring(0, index);
+
+        return long.TryParse(input, out var choice) ? choice : Choices.Unknown;
     }
 }
