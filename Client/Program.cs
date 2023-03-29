@@ -3,6 +3,8 @@ using System.Text.Json.Serialization;
 using Client.CommandLineInterface;
 using Client.Factories;
 using MassTransit;
+using Messages.Core;
+using Messages.PackageReservation;
 using Messages.PurchaseOrders;
 using Newtonsoft.Json;
 using Spectre.Console;
@@ -32,17 +34,19 @@ namespace Client
                         )).GetIndexOfSelectedChoice();
 
                 if (choice == 1)
-                    await SendOrderMessage();
+                    await SendCommand<PlaceOrder>(PurchaseOrderFactory.CreateCommand);
+                if (choice == 2)
+                    await SendCommand<ReservePackage>(PackageReservationFactory.CreateCommand);
             }
         }
 
-        private static async Task SendOrderMessage()
+        private static async Task SendCommand<T>(Func<T> factory) where T : class, ICommand
         {
             long choice = 2;
-            PlaceOrder command = null;
+            T command = null;
             while (choice == 2)
             {
-                command = PurchaseOrderFactory.CreateCommand();
+                command = factory();
                 Console.WriteLine(JsonConvert.SerializeObject(command, Formatting.Indented));
 
                 choice = CommandLine.AskAQuestion(a =>
@@ -50,7 +54,7 @@ namespace Client
                         .WithChoices(
                             "1.Send",
                             "2.Regenerate"
-                        )).GetIndexOfSelectedChoice(); 
+                        )).GetIndexOfSelectedChoice();
 
                 if (choice == 1) break;
 
@@ -58,7 +62,7 @@ namespace Client
             }
 
             var endpoint = await _bus.GetSendEndpoint(new Uri("queue:Router"));
-            await endpoint.Send<PlaceOrder>(command);
+            await endpoint.Send<T>(command);
             Console.WriteLine("Sent to Router !");
             Console.WriteLine("------------------------ Press Any Key to Continue ---------------");
             Console.ReadLine();

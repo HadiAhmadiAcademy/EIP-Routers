@@ -1,15 +1,14 @@
-﻿using System.Text.Json.Serialization;
-using MassTransit;
-using Messages.PurchaseOrders;
+﻿using MassTransit;
+using Messages.PackageReservation;
 using Newtonsoft.Json;
 
 namespace Consumer1.Handlers;
 
-public class PlaceOrderHandler : IConsumer<PlaceOrder>
+public class FlightReservationHandler : IConsumer<ReserveFlight>
 {
-    public Task Consume(ConsumeContext<PlaceOrder> context)
+    public Task Consume(ConsumeContext<ReserveFlight> context)
     {
-        Console.WriteLine("Message Received - PlaceOrder : ");
+        Console.WriteLine("Message Received - ReserveFlight : ");
         Console.WriteLine("---------------------");
         var json = JsonConvert.SerializeObject(context.Message, Formatting.Indented);
         Console.WriteLine(json);

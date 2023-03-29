@@ -9,8 +9,6 @@ namespace Router
     {
         static async Task Main(string[] args)
         {
-
-
             var bus = Bus.Factory.CreateUsingRabbitMq(sbc =>
             {
                 sbc.Host("rabbitmq://localhost");
@@ -18,6 +16,7 @@ namespace Router
                 {
                     ep.UseMessageRetry(r => r.Immediate(5));
                     ep.Consumer<PlaceOrderHandler>();
+                    ep.Consumer<ReservePackageHandler>();
                 });
             });
             await bus.StartAsync();

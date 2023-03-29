@@ -15,6 +15,8 @@ namespace Consumer1
                 sbc.ReceiveEndpoint("Consumer1", ep =>
                 {
                     ep.Consumer<PlaceOrderHandler>();
+                    ep.Consumer<FlightReservationHandler>();
+                    ep.Consumer<HotelReservationHandler>();
                 });
             });
             await bus.StartAsync();
