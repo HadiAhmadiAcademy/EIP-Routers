@@ -10,7 +10,7 @@ public class PlaceOrderHandler : IConsumer<PlaceOrder>
     private static readonly IContentBasedRouter<PlaceOrder> _router;
     static PlaceOrderHandler()
     {
-        _router =  UseContentBasedRouter.For<PlaceOrder>()
+        _router = UseContentBasedRouter.For<PlaceOrder>()
             .When(a => a.VendorId == 1).RouteTo("queue:Consumer1")
             .When(a => a.VendorId == 2).RouteTo("queue:Consumer2")
             .WhenNoCriteriaMatchesRouteTo("queue:Consumer3")
