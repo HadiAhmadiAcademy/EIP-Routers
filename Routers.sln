@@ -19,8 +19,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Router", "Router\Router.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Consumer1", "Consumer1\Consumer1.csproj", "{FEFD7DD6-A27D-4FA9-8142-F155B4CC42DB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Router.Tests", "Router.Tests\Router.Tests.csproj", "{F0B145AC-FC21-4A69-82C5-C2C6564C249E}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,10 +41,6 @@ Global
 		{FEFD7DD6-A27D-4FA9-8142-F155B4CC42DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FEFD7DD6-A27D-4FA9-8142-F155B4CC42DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FEFD7DD6-A27D-4FA9-8142-F155B4CC42DB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F0B145AC-FC21-4A69-82C5-C2C6564C249E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F0B145AC-FC21-4A69-82C5-C2C6564C249E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F0B145AC-FC21-4A69-82C5-C2C6564C249E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F0B145AC-FC21-4A69-82C5-C2C6564C249E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -56,7 +50,6 @@ Global
 		{C8C787D7-20F3-4140-96A6-6DA745AD95AC} = {CE7ADF56-8AC7-417A-903B-0CBAC455E6C1}
 		{02A641C7-527E-4685-8AFD-1D48CA462CDD} = {46E486B7-4F50-4EFC-A095-1FECA4C91ADE}
 		{FEFD7DD6-A27D-4FA9-8142-F155B4CC42DB} = {4ED8334C-2CD0-450E-AA29-7ABAB2E12EF1}
-		{F0B145AC-FC21-4A69-82C5-C2C6564C249E} = {46E486B7-4F50-4EFC-A095-1FECA4C91ADE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F137E712-E996-4BA1-B5FF-4AAC81E2621E}
