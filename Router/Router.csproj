@@ -9,12 +9,12 @@
 
   <ItemGroup>
     <PackageReference Include="DequeNET" Version="1.0.2" />
+    <PackageReference Include="mapster" Version="7.3.0" />
     <PackageReference Include="masstransit" Version="8.0.14" />
     <PackageReference Include="masstransit.rabbitmq" Version="8.0.14" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Model\Constants\" />
     <Folder Include="Handlers\" />
   </ItemGroup>
 

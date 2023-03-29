@@ -26,7 +26,8 @@ namespace Client
                 var choice = CommandLine.AskAQuestion(a=> 
                     a.About("Select the next action:")
                         .WithChoices(
-                            "1.Send 'PlaceOrder' Command",
+                            "1.Send 'PlaceOrder' Command (Iterating Splitter)",
+                            "2.Send 'ReservePackage' Command (Composite Message Splitter)",
                             "99.Exit"
                         )).GetIndexOfSelectedChoice();
 

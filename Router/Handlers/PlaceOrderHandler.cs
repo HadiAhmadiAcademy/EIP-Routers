@@ -1,21 +1,34 @@
 ﻿using MassTransit;
 using Messages.PurchaseOrders;
-using Router.Model;
+using Router.Splitters.Iterating;
 
 namespace Router.Handlers;
 
 public class PlaceOrderHandler : IConsumer<PlaceOrder>
 {
-    private readonly IContentBasedRouter<PlaceOrder> _router;
-    public PlaceOrderHandler(IContentBasedRouter<PlaceOrder> router)
+    private static readonly IteratingSplitter<PlaceOrder, PlaceOrder> _splitter;
+    static PlaceOrderHandler()
     {
-        _router = router;
+        _splitter = CreateIteratingSplitter.Which()
+            .TakesInput<PlaceOrder>()
+            .Produces<PlaceOrder>()
+            .SplitBasedOn(a => a.OrderLines.Count)
+            .UsingConverter((input, index) => new PlaceOrder()
+            {
+                VendorId = input.VendorId,
+                IssueDate = input.IssueDate,
+                OrderNumber = input.OrderNumber,
+                OrderLines = new List<OrderLine> { input.OrderLines[index] }
+            })
+            .Build();
     }
 
-    public Task Consume(ConsumeContext<PlaceOrder> context)
+
+    public async Task Consume(ConsumeContext<PlaceOrder> context)
     {
-        var destination = _router.FindDestinationFor(context.Message);
-        Console.WriteLine($"Message Received. Routing the message to : {destination}");
-        return context.Send(new Uri(destination), context.Message);
+        var messageSegments = _splitter.Split(context.Message);
+
+        foreach (var segment in messageSegments)
+            await context.Send(new Uri("queue:Consumer1"), segment);
     }
 }
