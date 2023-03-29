@@ -10,19 +10,13 @@ namespace Router
     {
         static async Task Main(string[] args)
         {
-            var router = UseContentBasedRouter.For<PlaceOrder>()
-                    .When(a => a.VendorId == 1).RouteTo("queue:Consumer1")
-                    .When(a => a.VendorId == 2).RouteTo("queue:Consumer2")
-                    .WhenNoCriteriaMatchesRouteTo("queue:Consumer3")
-                    .Build();
-
             var bus = Bus.Factory.CreateUsingRabbitMq(sbc =>
             {
                 sbc.Host("rabbitmq://localhost");
                 sbc.ReceiveEndpoint("Router", ep =>
                 {
                     ep.UseMessageRetry(r => r.Immediate(5));
-                    ep.Consumer(typeof(PlaceOrderHandler), a => new PlaceOrderHandler(router));
+                    ep.Consumer(typeof(PlaceOrderHandler), a => new PlaceOrderHandler());
                 });
             });
             await bus.StartAsync();

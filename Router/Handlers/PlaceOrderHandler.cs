@@ -1,15 +1,20 @@
 ﻿using MassTransit;
 using Messages.PurchaseOrders;
 using Router.Model;
+using Router.Model.RouterBuilder;
 
 namespace Router.Handlers;
 
 public class PlaceOrderHandler : IConsumer<PlaceOrder>
 {
-    private readonly IContentBasedRouter<PlaceOrder> _router;
-    public PlaceOrderHandler(IContentBasedRouter<PlaceOrder> router)
+    private static readonly IContentBasedRouter<PlaceOrder> _router;
+    static PlaceOrderHandler()
     {
-        _router = router;
+        _router =  UseContentBasedRouter.For<PlaceOrder>()
+            .When(a => a.VendorId == 1).RouteTo("queue:Consumer1")
+            .When(a => a.VendorId == 2).RouteTo("queue:Consumer2")
+            .WhenNoCriteriaMatchesRouteTo("queue:Consumer3")
+            .Build();
     }
 
     public Task Consume(ConsumeContext<PlaceOrder> context)
