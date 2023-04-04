@@ -13,9 +13,9 @@ The code is the way that each sample has its own branch containing the code and 
 | Content-Based Router | [01-content-based-router](https://github.com/HadiAhmadiAcademy/EIP-Routers/tree/01-content-based-router) |
 | Iterative Splitter | [02-Splitter](https://github.com/HadiAhmadiAcademy/EIP-Routers/tree/02-splitter) |
 | Composed Splitter | [02-Splitter](https://github.com/HadiAhmadiAcademy/EIP-Routers/tree/02-splitter) |
+| Recipient List | [03-recipient-list](https://github.com/HadiAhmadiAcademy/EIP-Routers/tree/03-recipient-list) |
 | Aggregator | ** soon ** |
 | Message Filter | ** soon ** |
-| Recipient List | ** soon ** |
 | Resequencer | ** soon ** |
 | Scatter-Gather | ** soon ** |
 | Routing Slip | ** soon ** |
