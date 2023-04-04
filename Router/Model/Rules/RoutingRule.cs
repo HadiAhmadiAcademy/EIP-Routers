@@ -5,11 +5,11 @@ namespace Router.Model.Rules;
 public class RoutingRule<T>
 {
     public ICriteria<T> Criteria { get; set; }
-    public string Destination { get; set; }
-    public RoutingRule(ICriteria<T> criteria, string destination)
+    public List<string> Destinations { get; set; }
+    public RoutingRule(ICriteria<T> criteria, List<string> destinations)
     {
         Criteria = criteria;
-        this.Destination = destination;
+        this.Destinations = destinations;
     }
     public bool IsSatisfiedByCriteria(T message)
     {

@@ -1,4 +1,5 @@
 ﻿using System.Threading.Channels;
+using MoreLinq;
 using Router.Model.Constants;
 
 namespace Router.Model.Rules;
@@ -6,30 +7,26 @@ namespace Router.Model.Rules;
 public class RoutingTable<T>
 {
     private List<RoutingRule<T>> _rules;
-    private string _defaultDestination;
+    private List<string> _defaultDestinations;
     public RoutingTable()
     {
         _rules = new List<RoutingRule<T>>();
-        _defaultDestination = Channels.NullChannel;
+        _defaultDestinations = new List<string>() { Channels.NullChannel };
     }
     public void AddRule(RoutingRule<T> rule)
     {
         _rules.Add(rule);
     }
-    public void SetDefaultDestination(string channelName)
+    public void SetDefaultDestinations(List<string> channelNames)
     {
-        this._defaultDestination = channelName;
+        this._defaultDestinations = channelNames;
     }
 
     public List<string> FindDestinationsForMessage(T message)
     {
-        var destinations = _rules.Where(a => a.IsSatisfiedByCriteria(message))
-            .Select(a => a.Destination)
+        return _rules.Where(a => a.IsSatisfiedByCriteria(message))
+            .SelectMany(a => a.Destinations)
+            .FallbackIfEmpty(_defaultDestinations)
             .ToList();
-
-        if (!destinations.Any()) 
-            destinations.Add(_defaultDestination);
-
-        return destinations;
     }
 }

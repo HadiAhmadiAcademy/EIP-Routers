@@ -11,11 +11,13 @@
     <PackageReference Include="DequeNET" Version="1.0.2" />
     <PackageReference Include="masstransit" Version="8.0.14" />
     <PackageReference Include="masstransit.rabbitmq" Version="8.0.14" />
+    <PackageReference Include="morelinq" Version="3.4.2" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Model\Constants\" />
     <Folder Include="Handlers\" />
+    <Folder Include="Model\Extensions\" />
   </ItemGroup>
 
   <ItemGroup>
