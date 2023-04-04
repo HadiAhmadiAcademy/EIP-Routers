@@ -1,6 +1,7 @@
 ﻿using MassTransit;
 using Messages.PurchaseOrders;
 using Router.Model;
+using Router.Model.ConflictResolvers;
 using Router.Model.RouterBuilder;
 
 namespace Router.Handlers;
@@ -16,7 +17,6 @@ public class PlaceOrderHandler : IConsumer<PlaceOrder>
             .WhenNoCriteriaMatchesRouteTo("queue:Consumer3")
             .Build();
     }
-
     public Task Consume(ConsumeContext<PlaceOrder> context)
     {
         var destination = _router.FindDestinationFor(context.Message);

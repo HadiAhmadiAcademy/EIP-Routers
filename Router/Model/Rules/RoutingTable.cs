@@ -23,13 +23,9 @@ public class RoutingTable<T>
 
     public List<string> FindDestinationsForMessage(T message)
     {
-        var destinations = _rules.Where(a => a.IsSatisfiedByCriteria(message))
+        return _rules.Where(a => a.IsSatisfiedByCriteria(message))
             .Select(a => a.Destination)
+            .DefaultIfEmpty(_defaultDestination)
             .ToList();
-
-        if (!destinations.Any()) 
-            destinations.Add(_defaultDestination);
-
-        return destinations;
     }
 }

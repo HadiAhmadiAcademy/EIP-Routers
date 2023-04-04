@@ -35,7 +35,7 @@ public class ContentBasedRouterBuilder<T> : IRouterConditionBuilder<T>,
         _routingTable.SetDefaultDestination(channelName);
         return this;
     }
-    public IRouterDestinationBuilder<T> ResolveConflictsWith(IConflictResolvingStrategy<T> strategy)
+    public IRouterConditionBuilder<T> ResolveConflictsWith(IConflictResolvingStrategy<T> strategy)
     {
         this._conflictResolver = strategy;
         return this;
@@ -48,7 +48,7 @@ public class ContentBasedRouterBuilder<T> : IRouterConditionBuilder<T>,
 
 public interface IRouterConditionBuilder<T>
 {
-    IRouterDestinationBuilder<T> ResolveConflictsWith(IConflictResolvingStrategy<T> strategy);
+    IRouterConditionBuilder<T> ResolveConflictsWith(IConflictResolvingStrategy<T> strategy);
     IRouterDestinationBuilder<T> When(ICriteria<T> criteria);
     IRouterDestinationBuilder<T> When(Func<T, bool> criteria);
     IRouterConditionBuilder<T> WhenNoCriteriaMatchesRouteTo(string channel);

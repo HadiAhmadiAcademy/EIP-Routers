@@ -1,4 +1,6 @@
-﻿namespace Router.Model.RoutingCriteria;
+﻿using System;
+
+namespace Router.Model.RoutingCriteria;
 
 public interface ICriteria<in T>
 {

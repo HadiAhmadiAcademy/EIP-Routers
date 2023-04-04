@@ -14,7 +14,6 @@ public class ContentBasedRouter<T> : IContentBasedRouter<T>
         this._routingTable = routingTable;
         this._conflictResolver = conflictResolver ?? PickFirst<T>.Instance;
     }
-
     public string FindDestinationFor(T message)
     {
         var destinations = _routingTable.FindDestinationsForMessage(message);
@@ -23,10 +22,9 @@ public class ContentBasedRouter<T> : IContentBasedRouter<T>
 
         return destinations.First();
     }
-
     private static bool IsConflictDetected(ICollection destinations)
     {
-        return destinations.Count > 0;
+        return destinations.Count > 1;
     }
 }
 
