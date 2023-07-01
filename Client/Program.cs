@@ -2,9 +2,10 @@
 using System.Text.Json.Serialization;
 using Client.CommandLineInterface;
 using Client.Factories;
+using Faker;
 using MassTransit;
 using Messages.Core;
-using Messages.PackageReservation;
+using Messages.Core.DataPartitioning;
 using Messages.PurchaseOrders;
 using Newtonsoft.Json;
 using Spectre.Console;
@@ -28,15 +29,39 @@ namespace Client
                 var choice = CommandLine.AskAQuestion(a=> 
                     a.About("Select the next action:")
                         .WithChoices(
-                            "1.Send 'PlaceOrder' Command (Iterating Splitter)",
-                            "2.Send 'ReservePackage' Command (Composite Message Splitter)",
+                            "1.Send Parts of a splitted 'PlaceOrder' ",
                             "99.Exit"
                         )).GetIndexOfSelectedChoice();
 
                 if (choice == 1)
-                    await SendCommand<PlaceOrder>(PurchaseOrderFactory.CreateCommand);
-                if (choice == 2)
-                    await SendCommand<ReservePackage>(PackageReservationFactory.CreateCommand);
+                {
+                    var order = PurchaseOrderFactory.CreateOrderWithoutLines();
+                    var countOfLines = RandomNumber.Next(2, 6);
+                    var orderLines = PurchaseOrderFactory.CreateSomeLines(countOfLines);
+
+                    Console.WriteLine("-- Order Body :");
+                    Console.WriteLine(JsonConvert.SerializeObject(order, Formatting.Indented));
+                    Console.WriteLine("-- Order Lines :");
+                    Console.WriteLine(JsonConvert.SerializeObject(orderLines, Formatting.Indented));
+                    Console.WriteLine($"Press to send ({countOfLines}) messages");
+                    Console.ReadLine();
+
+                    var endpoint = await _bus.GetSendEndpoint(new Uri("queue:Router"));
+
+                    for (int i = 0; i < countOfLines; i++)
+                    {
+                        order.OrderLines = new List<OrderLine>() { orderLines[i] };
+                        order.MessageId = Guid.NewGuid();
+                        order.SliceInfo = new SliceInfo(i +1, countOfLines);
+                        await endpoint.Send(order);
+                        Console.WriteLine($"Message #{i+1} Sent to Router !");
+                        Console.WriteLine("Wait 2 seconds...");
+                        Thread.Sleep(2000);
+                    }
+                    Console.WriteLine("------------------------ Press Any Key to Continue ---------------");
+                    Console.ReadLine();
+                }
+
             }
         }
 

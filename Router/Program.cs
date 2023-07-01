@@ -16,7 +16,6 @@ namespace Router
                 {
                     ep.UseMessageRetry(r => r.Immediate(5));
                     ep.Consumer<PlaceOrderHandler>();
-                    ep.Consumer<ReservePackageHandler>();
                 });
             });
             await bus.StartAsync();

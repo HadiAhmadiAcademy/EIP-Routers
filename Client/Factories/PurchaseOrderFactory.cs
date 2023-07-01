@@ -6,15 +6,16 @@ namespace Client.Factories;
 
 public static class PurchaseOrderFactory
 {
-    public static PlaceOrder CreateCommand()
+    public static PlaceOrder CreateOrderWithoutLines()
     {
         return Builder<PlaceOrder>.CreateNew()
             .With(a => a.VendorId = RandomNumber.Next(2, 10))
             .With(a => a.OrderNumber = RandomNumber.Next(100, 10000))
-            .With(a => a.OrderLines = Builder<OrderLine>
-                                        .CreateListOfSize(RandomNumber.Next(1, 3))
-                                        .Build()
-                                        .ToList())
             .Build();
+    }
+
+    public static List<OrderLine> CreateSomeLines(int count)
+    {
+        return Builder<OrderLine>.CreateListOfSize(count).Build().ToList();
     }
 }

@@ -14,9 +14,7 @@ namespace Consumer1
                 sbc.Host("rabbitmq://localhost");
                 sbc.ReceiveEndpoint("Consumer1", ep =>
                 {
-                    ep.Consumer<PlaceOrderHandler>();
-                    ep.Consumer<FlightReservationHandler>();
-                    ep.Consumer<HotelReservationHandler>();
+                    ep.Consumer<OrderHandler>();
                 });
             });
             await bus.StartAsync();

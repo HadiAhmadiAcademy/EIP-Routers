@@ -1,34 +1,34 @@
-﻿using MassTransit;
+﻿using System.Net.Http.Json;
+using System.Text;
+using System.Text.Json.Serialization;
+using MassTransit;
 using Messages.PurchaseOrders;
-using Router.Splitters.Iterating;
+using Newtonsoft.Json;
 
 namespace Router.Handlers;
 
 public class PlaceOrderHandler : IConsumer<PlaceOrder>
 {
-    private static readonly IteratingSplitter<PlaceOrder, PlaceOrder> _splitter;
-    static PlaceOrderHandler()
-    {
-        _splitter = CreateIteratingSplitter.Which()
-            .TakesInput<PlaceOrder>()
-            .Produces<PlaceOrder>()
-            .SplitBasedOn(a => a.OrderLines.Count)
-            .UsingConverter((input, index) => new PlaceOrder()
-            {
-                VendorId = input.VendorId,
-                IssueDate = input.IssueDate,
-                OrderNumber = input.OrderNumber,
-                OrderLines = new List<OrderLine> { input.OrderLines[index] }
-            })
-            .Build();
-    }
-
+    private static OrderAggregator Aggregator = new();
 
     public async Task Consume(ConsumeContext<PlaceOrder> context)
     {
-        var messageSegments = _splitter.Split(context.Message);
+        Console.WriteLine("Message Received...");
 
-        foreach (var segment in messageSegments)
-            await context.Send(new Uri("queue:Consumer1"), segment);
+        var aggregatedResult = await Aggregator.Aggregate(context.Message);
+        if (aggregatedResult.HasValue)
+        {
+            Console.WriteLine("--------------------Aggregation Completed-----------------------");
+            Console.WriteLine(JsonConvert.SerializeObject(aggregatedResult.Value, Formatting.Indented));
+            Console.WriteLine("----------------------------------------------------------------");
+            var endpoint = await context.GetSendEndpoint(new Uri("queue:Consumer1"));
+            await endpoint.Send(aggregatedResult.Value);
+            Console.WriteLine("Sent to output channel...");
+            Console.WriteLine("----------------------------------------------------------------");
+        }
+        else
+        {
+            Console.WriteLine("Aggregation not completed. waiting for more messages...");
+        }
     }
 }
