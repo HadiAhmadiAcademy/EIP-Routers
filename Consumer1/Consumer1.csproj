@@ -17,4 +17,8 @@
     <ProjectReference Include="..\Messages\Messages.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Handlers\" />
+  </ItemGroup>
+
 </Project>

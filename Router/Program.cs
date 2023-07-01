@@ -1,6 +1,6 @@
 ﻿using DequeNet;
 using MassTransit;
-using Messages.PurchaseOrders;
+using Messages.Auctions;
 using Router.Handlers;
 
 namespace Router
@@ -14,8 +14,9 @@ namespace Router
                 sbc.Host("rabbitmq://localhost");
                 sbc.ReceiveEndpoint("Router", ep =>
                 {
+                    ep.ConcurrentMessageLimit = 1;
                     ep.UseMessageRetry(r => r.Immediate(5));
-                    ep.Consumer<PlaceOrderHandler>();
+                    ep.Consumer<BidsResequencer>();
                 });
             });
             await bus.StartAsync();

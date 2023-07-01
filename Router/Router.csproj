@@ -19,8 +19,4 @@
     <ProjectReference Include="..\Messages\Messages.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Data\" />
-  </ItemGroup>
-
 </Project>
