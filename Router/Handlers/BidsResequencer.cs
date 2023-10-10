@@ -10,7 +10,7 @@ namespace Router.Handlers;
 
 public class BidsResequencer : IConsumer<BidPlaced>
 {
-    private static IResequencer<long, BidPlaced> Resequencer = new InMemoryNumericResequencer<BidPlaced>();
+    private static IResequencer<long, BidPlaced> Resequencer = Create.NumericResequencerFor<BidPlaced>();
     public async Task Consume(ConsumeContext<BidPlaced> context)
     {
         Console.WriteLine($"Message #{context.Message.SequenceId} Received...");
