@@ -7,8 +7,7 @@ public class BidHandler : IConsumer<BidPlaced>
 {
     public Task Consume(ConsumeContext<BidPlaced> context)
     {
-        Console.WriteLine($"Bid Received : #{context.Message.SequenceId} - Amount : {context.Message.BidAmount}");
-
+        Console.WriteLine($"Bid Received : #CorrelationId:{context.Message.CorrelationId}  - SequenceId:#{context.Message.SequenceId}");
         return Task.CompletedTask;
     }
 }

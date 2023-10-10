@@ -2,9 +2,10 @@
 
 namespace Router.Resequencers;
 
-public interface IResequencer<TIndex, TMessage> where TMessage : IHaveSequenceId<TIndex>
+public interface IResequencer<TCorrelation, TIndex, TMessage> 
+                                                where TMessage : IHaveSequenceId<TIndex>, IHaveCorrelationId<TCorrelation>
                                                 where TIndex : IComparable
 {
     void Add(TMessage message);
-    SortedList<TIndex, TMessage> ExtractCompletedSegment();
+    List<Segment<TCorrelation, TIndex, TMessage>> ExtractCompletedSegments();
 }

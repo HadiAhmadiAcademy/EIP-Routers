@@ -9,7 +9,6 @@ public static class CommandLine
     {
         var question = new Question();
         questionConfigurator(question);
-
         return AnsiConsole.Prompt(
             new SelectionPrompt<string>()
                 .Title(question.QuestionText)

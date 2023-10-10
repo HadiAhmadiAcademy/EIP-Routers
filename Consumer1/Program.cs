@@ -1,5 +1,7 @@
-﻿using Consumer1.Handlers;
+﻿using CommandLine;
+using Consumer1.Handlers;
 using MassTransit;
+using Router.Core;
 
 namespace Consumer1
 {
@@ -7,12 +9,14 @@ namespace Consumer1
     {
         static async Task Main(string[] args)
         {
-            Console.WriteLine("----- Consumer 1 ----- ");
+            var arguments = Parser.Default.ParseArguments<ConsumerArguments>(args).Value;
+
+            Console.WriteLine($"----- {arguments.InputQueue} ----- ");
 
             var bus = Bus.Factory.CreateUsingRabbitMq(sbc =>
             {
                 sbc.Host("rabbitmq://localhost");
-                sbc.ReceiveEndpoint("Consumer1", ep =>
+                sbc.ReceiveEndpoint(arguments.InputQueue, ep =>
                 {
                     ep.Consumer<BidHandler>();
                 });

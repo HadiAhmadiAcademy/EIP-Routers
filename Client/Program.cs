@@ -5,6 +5,7 @@ using Client.CommandLineInterface;
 using Client.Factories;
 using Faker;
 using MassTransit;
+using Messages.Auctions;
 using Messages.Core;
 using Newtonsoft.Json;
 using Spectre.Console;
@@ -29,28 +30,46 @@ namespace Client
                 var choice = CommandLine.AskAQuestion(a=> 
                     a.About("Select the next action:")
                         .WithChoices(
-                            "1.Send a sequence of  5 'BidPlaced' randomly disordered",
+                            "1.Send 5 out-of-order messages with 5 different correlation ids",
                             "99.Exit"
                         )).GetIndexOfSelectedChoice();
 
-
                 if (choice == 1)
                 {
-                    var bids = BidFactory.CreateSomeBidsWithRandomOrder(cursor, cursor + 5);
+                    var setOfBids = new Dictionary<long, List<BidPlaced>>();
+
+                    for (int i = 1; i <= 5; i++)
+                    {
+                        var bids = BidFactory.CreateSomeBidsWithRandomOrder(cursor, cursor + 5, i);
+                        setOfBids.Add(i, bids);
+                    }
                     cursor += 5;
+
+                    Console.WriteLine("Preview :");
+                    foreach (var set in setOfBids)
+                    {
+                        Console.WriteLine($"-------------Correlation Id : {set.Key}------------------");
+                        Console.WriteLine(string.Join(" | ", set.Value.Select(a=> a.SequenceId)));
+                        Console.WriteLine($"---------------------------------------------------------");
+                    }
+
+                    Console.WriteLine("Press any key to mix sets and send them...");
+                    Console.ReadLine();
+
 
                     Console.WriteLine("-- Bid Placed Events:");
                     var endpoint = await _bus.GetSendEndpoint(new Uri("queue:Router"));
 
-                    foreach (var bidPlaced in bids)
+                    var mixedList = setOfBids.SelectMany(a => a.Value).ToList().Shuffle();
+
+                    foreach (var bidPlaced in mixedList)
                     {
-                        Console.WriteLine($"#{bidPlaced.SequenceId} - Amount : {bidPlaced.BidAmount}");
+                        Console.WriteLine($"Correlation:#{bidPlaced.OrderId}  -  Sequence:#{bidPlaced.SequenceId}");
                         await endpoint.Send(bidPlaced);
                         Thread.Sleep(3000);
                     }
 
                     Console.WriteLine("------------------------ Sent !------ ---------------");
-
 
                     
                     Console.WriteLine("------------------------ Press Any Key to Continue ---------------");

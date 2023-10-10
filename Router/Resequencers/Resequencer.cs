@@ -1,23 +1,27 @@
-﻿using Messages.Core;
+﻿using System.Collections.Immutable;
+using Messages.Core;
 
 namespace Router.Resequencers;
 
-public class Resequencer<TIndex,TMessage> : IResequencer<TIndex, TMessage> where TMessage : IHaveSequenceId<TIndex>
-                                                                            where TIndex : IComparable
+public class Resequencer<TCorrelation, TIndex,TMessage> : IResequencer<TCorrelation, TIndex, TMessage> 
+                                                        where TMessage : IHaveSequenceId<TIndex>, IHaveCorrelationId<TCorrelation>
+                                                        where TIndex : IComparable
 {
     private SortedDictionary<TIndex, TMessage> _items = new();
+    private readonly TCorrelation _correlationId;
     private IEnumerator<TIndex> _cursor;
 
-    public Resequencer(IEnumerator<TIndex> cursor)
+    public Resequencer(TCorrelation correlationId, IEnumerator<TIndex> cursor)
     {
         cursor.Reset();
+        _correlationId = correlationId;
         this._cursor = cursor;
     }
     public void Add(TMessage message)
     {
         _items.Add(message.SequenceId, message);
     }
-    public SortedList<TIndex, TMessage> ExtractCompletedSegment()
+    public List<Segment<TCorrelation, TIndex, TMessage>> ExtractCompletedSegments()
     {
         var outputList = new SortedList<TIndex, TMessage>();
         while (true)
@@ -32,6 +36,9 @@ public class Resequencer<TIndex,TMessage> : IResequencer<TIndex, TMessage> where
 
             _cursor.MoveNext();
         }
-        return outputList;
+        return new List<Segment<TCorrelation, TIndex, TMessage>>()
+        {
+            new(this._correlationId, outputList)
+        };
     }
 }

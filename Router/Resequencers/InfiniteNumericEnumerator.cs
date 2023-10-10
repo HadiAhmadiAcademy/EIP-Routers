@@ -11,7 +11,6 @@ public class InfiniteNumericEnumerator : IEnumerator<long>
         this._startingIndex = startingIndex;
         this._currentIndex = startingIndex;
     }
-    public InfiniteNumericEnumerator() { }
     public bool MoveNext()
     {
         _currentIndex++;

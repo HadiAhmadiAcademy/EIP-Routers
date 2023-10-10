@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="commandlineparser" Version="2.9.1" />
     <PackageReference Include="DequeNET" Version="1.0.2" />
     <PackageReference Include="mapster" Version="7.3.0" />
     <PackageReference Include="masstransit" Version="8.0.14" />
