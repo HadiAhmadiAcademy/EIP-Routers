@@ -58,7 +58,7 @@ namespace Client
 
 
                     Console.WriteLine("-- Bid Placed Events:");
-                    var endpoint = await _bus.GetSendEndpoint(new Uri("queue:Router"));
+                    var endpoint = await _bus.GetSendEndpoint(new Uri("queue:Resequencer "));
 
                     var mixedList = setOfBids.SelectMany(a => a.Value).ToList().Shuffle();
 
