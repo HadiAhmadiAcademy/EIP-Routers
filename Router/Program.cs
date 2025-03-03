@@ -10,6 +10,7 @@ namespace Router
     {
         static async Task Main(string[] args)
         {
+            Console.Title = "Router";
             var bus = Bus.Factory.CreateUsingRabbitMq(sbc =>
             {
                 sbc.Host("rabbitmq://localhost");

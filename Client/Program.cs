@@ -14,6 +14,7 @@ namespace Client
         private static IBusControl _bus;
         static async Task Main(string[] args)
         {
+            Console.Title = "Client";
             _bus = Bus.Factory.CreateUsingRabbitMq(sbc =>
             {
                 sbc.Host("rabbitmq://localhost");
