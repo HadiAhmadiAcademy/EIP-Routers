@@ -7,6 +7,7 @@ namespace Consumer3
     {
         static async Task Main(string[] args)
         {
+            Console.Title = "Consumer 3";
             Console.WriteLine("----- Consumer 3 ----- ");
 
             var bus = Bus.Factory.CreateUsingRabbitMq(sbc =>
