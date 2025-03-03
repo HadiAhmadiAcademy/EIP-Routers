@@ -16,7 +16,6 @@ namespace Consumer1
                 sbc.ReceiveEndpoint("Consumer", ep =>
                 {
                     ep.Consumer<PlaceOrderHandler>();
-                    ep.ConcurrentMessageLimit = 1;
                 });
             });
             await bus.StartAsync();

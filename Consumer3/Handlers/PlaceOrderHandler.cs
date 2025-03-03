@@ -7,16 +7,19 @@ namespace Consumer3.Handlers;
 
 public class PlaceOrderHandler : IConsumer<PlaceOrder>
 {
+    static object lockObj = new object();
     private static long _totalReceived = 0;
 
     public Task Consume(ConsumeContext<PlaceOrder> context)
     {
-        Interlocked.Increment(ref _totalReceived);
-
         Thread.Sleep(RandomNumber.Next(500, 3000));
-
         Console.WriteLine($"Message Received. OrderNo: {context.Message.OrderNumber}");
-        Console.WriteLine($"-------------------| Total Received: {_totalReceived} |------------");
+
+        lock (lockObj)
+        {
+            _totalReceived++;
+            Console.WriteLine($"-------------------| Total Received: {_totalReceived} |------------");
+        }
         return Task.CompletedTask;
     }
 }
