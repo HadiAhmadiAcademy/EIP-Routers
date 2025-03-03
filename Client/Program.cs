@@ -25,42 +25,33 @@ namespace Client
             while (true)
             {
                 Console.Clear();
+
                 var choice = CommandLine.AskAQuestion(a=> 
                     a.About("Select the next action:")
                         .WithChoices(
-                            "1.Send 'PlaceOrder' Command",
+                            "1. Send 100 Random Messages",
                             "99.Exit"
                         )).GetIndexOfSelectedChoice();
 
                 if (choice == 1)
-                    await SendOrderMessage();
+                    await SendOrderMessages();
             }
         }
 
-        private static async Task SendOrderMessage()
+        private static async Task SendOrderMessages()
         {
-            long choice = 2;
-            PlaceOrder command = null;
-            while (choice == 2)
+            for (int i = 1; i <= 100; i++)
             {
-                command = PurchaseOrderFactory.CreateCommand();
-                Console.WriteLine(JsonConvert.SerializeObject(command, Formatting.Indented));
+                var command = PurchaseOrderFactory.CreateCommand();
+                command.OrderNumber = i;
 
-                choice = CommandLine.AskAQuestion(a =>
-                    a.About("Select the next action:")
-                        .WithChoices(
-                            "1.Send",
-                            "2.Regenerate"
-                        )).GetIndexOfSelectedChoice(); 
+                var endpoint = await _bus.GetSendEndpoint(new Uri("queue:Consumer"));
+                await endpoint.Send(command);
 
-                if (choice == 1) break;
-
-                Console.Clear();
+                Console.WriteLine($"#{i} Sent");
             }
 
-            var endpoint = await _bus.GetSendEndpoint(new Uri("queue:Router"));
-            await endpoint.Send<PlaceOrder>(command);
-            Console.WriteLine("Sent to Router !");
+            Console.WriteLine("------------------------ Completed !");
             Console.WriteLine("------------------------ Press Any Key to Continue ---------------");
             Console.ReadLine();
         }

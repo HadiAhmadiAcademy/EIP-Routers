@@ -13,9 +13,10 @@ namespace Consumer2
             var bus = Bus.Factory.CreateUsingRabbitMq(sbc =>
             {
                 sbc.Host("rabbitmq://localhost");
-                sbc.ReceiveEndpoint("Consumer2", ep =>
+                sbc.ReceiveEndpoint("Consumer", ep =>
                 {
                     ep.Consumer<PlaceOrderHandler>();
+                    ep.ConcurrentMessageLimit = 1;
                 });
             });
             await bus.StartAsync();
