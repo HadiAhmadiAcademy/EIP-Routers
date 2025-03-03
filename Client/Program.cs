@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using Client.CommandLineInterface;
-using Client.Factories;
+using Faker;
 using MassTransit;
 using Messages.PurchaseOrders;
 using Newtonsoft.Json;
@@ -28,41 +28,61 @@ namespace Client
                 var choice = CommandLine.AskAQuestion(a=> 
                     a.About("Select the next action:")
                         .WithChoices(
-                            "1.Send 'PlaceOrder' Command",
+                            "1.Send 4 Duplicate 'RemoveOrder' Command - (Semantic Sample)",
+                            "2.Send 4 Duplicate 'SendPlaceOrder' Command - (Inbox Sample)",
                             "99.Exit"
                         )).GetIndexOfSelectedChoice();
 
                 if (choice == 1)
-                    await SendOrderMessage();
+                    await SendRemoveOrder();
+                if (choice == 2)
+                    await SendPlaceOrder();
             }
         }
 
-        private static async Task SendOrderMessage()
+        private static async Task SendRemoveOrder()
         {
-            long choice = 2;
-            PlaceOrder command = null;
-            while (choice == 2)
+            var endpoint = await _bus.GetSendEndpoint(new Uri("queue:Consumer1"));
+
+            var orderId = RandomNumber.Next(1, 1000);
+            Console.WriteLine($"Start Sending Duplicate Messages for Order {orderId}...");
+
+            for (int i = 0; i < 4; i++)
             {
-                command = PurchaseOrderFactory.CreateCommand();
-                Console.WriteLine(JsonConvert.SerializeObject(command, Formatting.Indented));
+                var command = new RemoveOrder()
+                {
+                    OrderId = orderId,
+                    MessageId = Guid.NewGuid()
+                };
 
-                choice = CommandLine.AskAQuestion(a =>
-                    a.About("Select the next action:")
-                        .WithChoices(
-                            "1.Send",
-                            "2.Regenerate"
-                        )).GetIndexOfSelectedChoice(); 
-
-                if (choice == 1) break;
-
-                Console.Clear();
+                await endpoint.Send<RemoveOrder>(command);
+                Console.WriteLine($"#{i} Sent !");
+                Thread.Sleep(1000);
             }
-
-            var endpoint = await _bus.GetSendEndpoint(new Uri("queue:Router"));
-            await endpoint.Send<PlaceOrder>(command);
-            Console.WriteLine("Sent to Router !");
             Console.WriteLine("------------------------ Press Any Key to Continue ---------------");
             Console.ReadLine();
         }
+
+        private static async Task SendPlaceOrder()
+        {
+            var command = new PlaceOrder
+            {
+                MessageId = Guid.NewGuid(),
+            };
+
+            var endpoint = await _bus.GetSendEndpoint(new Uri("queue:Consumer2"));
+
+            Console.WriteLine("Start Sending Duplicate Messages...");
+
+            for (int i = 0; i < 4; i++)
+            {
+                await endpoint.Send<PlaceOrder>(command);
+                Console.WriteLine($"#{i} Sent !");
+                Thread.Sleep(1000);
+            }
+            Console.WriteLine("------------------------ Press Any Key to Continue ---------------");
+            Console.ReadLine();
+        }
+
     }
 }

@@ -2,9 +2,8 @@
 
 namespace Messages.PurchaseOrders;
 
-public class PlaceOrder : ICommand
+public class RemoveOrder : ICommand
 {
     public Guid MessageId { get; set; }
-    public string Description { get; set; }
-
+    public long OrderId { get; set; }
 }

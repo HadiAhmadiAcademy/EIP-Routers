@@ -7,15 +7,15 @@ namespace Consumer1
     {
         static async Task Main(string[] args)
         {
-            Console.Title = "Consumer 1";
-            Console.WriteLine("----- Consumer 1 ----- ");
+            Console.Title = "Consumer 1 - Semantic";
+            Console.WriteLine("----- Consumer 1 - Semantic ----- ");
 
             var bus = Bus.Factory.CreateUsingRabbitMq(sbc =>
             {
                 sbc.Host("rabbitmq://localhost");
                 sbc.ReceiveEndpoint("Consumer1", ep =>
                 {
-                    ep.Consumer<PlaceOrderHandler>();
+                    ep.Consumer<RemoveOrderHandler>();
                 });
             });
             await bus.StartAsync();
